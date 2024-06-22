@@ -1,9 +1,10 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { SmsProviderService } from './sms-provider.service';
+import { MessagePattern } from '@nestjs/microservices';
 @Controller('sms')
 export class SmsController {
   constructor(private readonly smsProviderService: SmsProviderService) {}
-  @Post('/send')
+  @MessagePattern({ cmd: 'send_sms' })
   async send(): Promise<{ status: string; data: { message: string } }> {
     const response = await this.smsProviderService.send(
       'this is text message',
