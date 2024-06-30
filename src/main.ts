@@ -1,8 +1,27 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { AppModule } from './app.module'; // Adjust the path if necessary
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  console.log('Starting microservice...');
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.RMQ,
+      options: {
+        urls: ['amqp://localhost:5672'],
+        queue: 'sms_queue',
+        queueOptions: {
+          durable: true,
+        },
+      },
+    },
+  );
+
+  await app.listen();
+  console.log('Microservice is listening');
 }
-bootstrap();
+
+bootstrap().catch((err) => {
+  console.error('Error in bootstrap', err);
+});

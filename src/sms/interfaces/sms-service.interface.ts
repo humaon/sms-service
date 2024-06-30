@@ -1,3 +1,7 @@
 export interface SmsService {
-  sendSms(message: string, recipient: string): Promise<{ message: string }>;
+  sendSms(
+    message: string,
+    recipient: string,
+    delay: number,
+  ): Promise<{ message: string }>;
 }

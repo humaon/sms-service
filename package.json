@@ -26,6 +26,7 @@
     "@nestjs/microservices": "^10.3.9",
     "@nestjs/platform-express": "^10.0.0",
     "@vonage/server-sdk": "^3.14.1",
+    "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.4",
     "nexmo": "^2.9.1",
     "reflect-metadata": "^0.2.0",

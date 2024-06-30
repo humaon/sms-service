@@ -5,6 +5,7 @@ import { TwilioSmsAdapter } from './adapters/twilio-sms-adapter';
 import { NexmoSmsAdapter } from './adapters/nexmo-sms-adapter';
 import { SmsController } from './sms.controller';
 import { SmsAdapterFactory } from './adapters/sms-adapter.factory';
+import { SmsQueueService } from './sms-queue.service';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SmsAdapterFactory } from './adapters/sms-adapter.factory';
     SmsAdapterFactory,
     TwilioSmsAdapter,
     NexmoSmsAdapter,
+    SmsQueueService,
     {
       provide: 'SmsService',
       useFactory: (
@@ -49,6 +51,6 @@ import { SmsAdapterFactory } from './adapters/sms-adapter.factory';
       ],
     },
   ],
-  exports: [SmsProviderService],
+  exports: [SmsProviderService, SmsQueueService],
 })
 export class SmsModule {}
