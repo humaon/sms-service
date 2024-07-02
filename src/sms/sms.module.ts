@@ -5,11 +5,22 @@ import { TwilioSmsAdapter } from './adapters/twilio-sms-adapter';
 import { NexmoSmsAdapter } from './adapters/nexmo-sms-adapter';
 import { SmsController } from './sms.controller';
 import { SmsAdapterFactory } from './adapters/sms-adapter.factory';
-import { SmsQueueService } from './sms-queue.service';
+import { SmsService } from './interfaces/sms-service.interface';
 
+import { BullModule } from '@nestjs/bull';
+import { SmsProcessor } from './sms.processor';
 @Module({
   imports: [
     ConfigModule, // Import ConfigModule to use ConfigService
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'sms',
+    }),
   ],
   controllers: [SmsController],
   providers: [
@@ -17,7 +28,8 @@ import { SmsQueueService } from './sms-queue.service';
     SmsAdapterFactory,
     TwilioSmsAdapter,
     NexmoSmsAdapter,
-    SmsQueueService,
+
+    SmsProcessor,
     {
       provide: 'SmsService',
       useFactory: (
@@ -51,6 +63,6 @@ import { SmsQueueService } from './sms-queue.service';
       ],
     },
   ],
-  exports: [SmsProviderService, SmsQueueService],
+  exports: [SmsProviderService],
 })
 export class SmsModule {}

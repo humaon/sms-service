@@ -1,22 +1,18 @@
-import { Injectable, Inject } from '@nestjs/common';
-
-import { SmsQueueService } from './sms-queue.service'; // Import the new SmsQueueService
-
+import { Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 @Injectable()
 export class SmsProviderService {
-  constructor(
-    private readonly smsQueueService: SmsQueueService, // Inject the new SmsQueueService
-  ) {}
+  constructor(@InjectQueue('sms') private readonly smsQueue: Queue) {}
 
-  async send(
+  async addSmsJob(
     message: string,
     recipient: string,
     delayMs: number = 0,
   ): Promise<void> {
-    if (delayMs > 0) {
-      await this.smsQueueService.sendDelayedSms(message, recipient, delayMs);
-    } else {
-      await this.smsQueueService.sendSms(message, recipient);
-    }
+    await this.smsQueue.add(
+      { message, recipient },
+      { delay: delayMs }, // Add the delay here
+    );
   }
 }
